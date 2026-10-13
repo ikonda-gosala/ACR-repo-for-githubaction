@@ -1,0 +1,54 @@
+name: Build, Push and deploy to Azure.
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  APP_NAME: demoweatherapp
+  IMAGE_REPOSITORY_NAME: weatherappforgithubactions
+  IMAGE_TAG: V1.0.0
+
+jobs:
+  Build:
+    name: Build the container image from the docker file.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code i.e., Dockerfile from the repo
+        uses: actions/checkout@v4
+  
+      - name: Checking the git and docker version.
+        run: |
+          whoami
+          docker --version
+          git --version
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: List the docker images
+        run: docker image ls
+
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and Push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: .  # Tells Docker to look for the Dockerfile in the root folder
+          push: true
+          tags: ${{ secrets.ACR_SERVER }}/${{ env.IMAGE_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+
+  
+
+
+
+
+
+
+      
