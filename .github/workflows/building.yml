@@ -44,6 +44,12 @@ jobs:
           push: true
           tags: ${{ secrets.ACR_SERVER }}/${{ env.IMAGE_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
 
+
+      - name: Printing the Docker Images
+        run: |
+          docker images
+          ls -la
+
   
 
 
