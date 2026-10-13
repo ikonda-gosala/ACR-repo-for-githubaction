@@ -15,25 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: setup a docker buildx
-        uses: docker/setup-build-actions@v2
+      # 1. You must check out your repository code first so Docker can find your Dockerfile
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-      - name: login to ACR
-        uses: docker/login-actions@v1
+      # 2. Corrected name: setup-buildx-action
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Corrected name: login-action
+      - name: Login to ACR
+        uses: docker/login-action@v3
         with:
           registry: ${{ secrets.ACR_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
+      # 4. Corrected name: build-push-action
       - name: Build and Push the image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
+          context: .  # Tells Docker to look for the Dockerfile in the root folder
           push: true
           tags: ${{ secrets.ACR_SERVER }}/${{ env.IMAGE_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
-
-
-
-
-        
-    
-    
